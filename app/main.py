@@ -4,7 +4,7 @@ import json
 app = Flask(__name__)
 
 def get_data():
-  file = open('data.json')
+  file = open('app/data.json')
   return json.load(file)
 
 @app.route('/quantity', methods=['GET'])
