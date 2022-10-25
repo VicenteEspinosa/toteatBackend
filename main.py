@@ -12,7 +12,13 @@ def index():
   data = get_data()
   return Response(str({'len': len(data)}), status=200, mimetype='application/json')
 
-
+@app.route('/missing_money', methods=['GET'])
+def missing_money():
+  data = get_data()
+  missing_money_tables = list(filter(lambda table: sum(product['price'] * product['quantity'] for product in table['products'])
+             > sum(paymeny['amount'] for paymeny in table['payments']), data))
+    
+  return Response(json.dumps(missing_money_tables), status=200, mimetype='application/json')
 
 if __name__ == '__main__':
    app.run(port=8000, debug=True)
