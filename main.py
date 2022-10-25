@@ -32,7 +32,20 @@ def sells_per_waiter():
       sells[table['waiter']]['income'] += table['total']
 
   return Response(json.dumps(sells), status=200, mimetype='application/json')
- 
+  
+@app.route('/sells_per_cashier', methods=['GET'])
+def sells_per_cashier():
+  data = get_data()
+  sells = {}
+  for table in data:
+    if table['cashier'] not in sells:
+      sells[table['cashier']] = {'quantity': 1, 'income': table['total']}
+    else:
+      sells[table['cashier']]['quantity'] += 1
+      sells[table['cashier']]['income'] += table['total']
+
+  return Response(json.dumps(sells), status=200, mimetype='application/json')
+
 
 if __name__ == '__main__':
    app.run(port=8000, debug=True)
