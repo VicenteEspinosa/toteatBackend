@@ -20,5 +20,19 @@ def missing_money():
     
   return Response(json.dumps(missing_money_tables), status=200, mimetype='application/json')
 
+@app.route('/sells_per_waiter', methods=['GET'])
+def sells_per_waiter():
+  data = get_data()
+  sells = {}
+  for table in data:
+    if table['waiter'] not in sells:
+      sells[table['waiter']] = {'quantity': 1, 'income': table['total']}
+    else:
+      sells[table['waiter']]['quantity'] += 1
+      sells[table['waiter']]['income'] += table['total']
+
+  return Response(json.dumps(sells), status=200, mimetype='application/json')
+ 
+
 if __name__ == '__main__':
    app.run(port=8000, debug=True)
