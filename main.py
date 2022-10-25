@@ -46,6 +46,45 @@ def sells_per_cashier():
 
   return Response(json.dumps(sells), status=200, mimetype='application/json')
 
+@app.route('/purchases_by_category', methods=['GET'])
+def purchases_by_category():
+  data = get_data()
+  sells = {}
+  for table in data:
+    for product in table['products']:
+      if product['category'] not in sells:
+        sells[product['category']] = {'quantity': 1, 'income': product['price']}
+      else:
+        sells[product['category']]['quantity'] += 1
+        sells[product['category']]['income'] += product['price']
+
+  return Response(json.dumps(sells), status=200, mimetype='application/json')
+
+@app.route('/purchases_by_pay_method', methods=['GET'])
+def purchases_by_pay_method():
+  data = get_data()
+  sells = {}
+  for table in data:
+    for payment in table['payments']:
+      if payment['type'] not in sells:
+        sells[payment['type']] = payment['amount']
+      else:
+        sells[payment['type']] += payment['amount']
+
+  return Response(json.dumps(sells), status=200, mimetype='application/json')
+
+@app.route('/purchases_by_zone', methods=['GET'])
+def purchases_by_zone():
+  data = get_data()
+  sells = {}
+  for table in data:
+    if table['zone'] not in sells:
+      sells[table['zone']] = {'quantity': 1, 'income': table['total']}
+    else:
+      sells[table['zone']]['quantity'] += 1
+      sells[table['zone']]['income'] += table['total']
+
+  return Response(json.dumps(sells), status=200, mimetype='application/json')
 
 if __name__ == '__main__':
    app.run(port=8000, debug=True)
