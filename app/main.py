@@ -1,7 +1,10 @@
 from flask import Flask, request, Response
+from flask_cors import CORS, cross_origin
 import json
  
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 def get_data():
   file = open('app/data.json')
