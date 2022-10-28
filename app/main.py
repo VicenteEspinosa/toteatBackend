@@ -20,6 +20,9 @@ def missing_money():
   data = get_data()
   missing_money_tables = list(filter(lambda table: sum(product['price'] * product['quantity'] for product in table['products'])
              > sum(paymeny['amount'] for paymeny in table['payments']), data))
+  for table in missing_money_tables:
+    table['missing_money'] = sum(product['price'] * product['quantity'] for product in table['products'])
+    - sum(paymeny['amount'] for paymeny in table['payments'])
     
   return Response(json.dumps(missing_money_tables), status=200, mimetype='application/json')
 
