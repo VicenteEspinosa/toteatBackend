@@ -108,5 +108,10 @@ def categories_by_zone():
 
   return Response(json.dumps(zones), status=200, mimetype='application/json')
 
+@app.route('/ping', methods=['GET'])
+def ping():
+  data = get_data()
+  return Response('ok', status=200, mimetype='application/json')
+
 if __name__ == '__main__':
    app.run(port=8000, debug=True)
