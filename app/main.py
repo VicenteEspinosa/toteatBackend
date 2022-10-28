@@ -89,5 +89,19 @@ def purchases_by_zone():
 
   return Response(json.dumps(sells), status=200, mimetype='application/json')
 
+@app.route('/categories_by_zone', methods=['GET'])
+def categories_by_zone():
+  data = get_data()
+  zones = {}
+  for table in data:
+    for product in table['products']:
+      if table['zone'] not in zones:
+        zones[table['zone']] = {'quantity': 1, 'income': product['price']}
+      else:
+        zones[table['zone']]['quantity'] += 1
+        zones[table['zone']]['income'] += product['price']
+
+  return Response(json.dumps(zones), status=200, mimetype='application/json')
+
 if __name__ == '__main__':
    app.run(port=8000, debug=True)
