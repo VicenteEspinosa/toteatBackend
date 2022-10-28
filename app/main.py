@@ -17,11 +17,19 @@ def index():
 
 @app.route('/missing_money', methods=['GET'])
 def missing_money():
+  suspicious_cashiers = {}
   data = get_data()
   missing_money_tables = list(filter(lambda table: sum(product['price'] * product['quantity'] for product in table['products'])
              > sum(paymeny['amount'] for paymeny in table['payments']), data))
+  for suspicious_table in missing_money_tables:
+    if suspicious_table['cashier'] not in suspicious_cashiers:
+      suspicious_cashiers[suspicious_table['cashier']] = [{'tableData': suspicious_table, 'missing_money': sum(product['price'] * product['quantity'] for product in suspicious_table['products'])
+             - sum(paymeny['amount'] for paymeny in suspicious_table['payments'])}]
+    else:
+      suspicious_cashiers[suspicious_table['cashier']].append({'tableData': suspicious_table, 'missing_money': sum(product['price'] * product['quantity'] for product in suspicious_table['products'])
+             - sum(paymeny['amount'] for paymeny in suspicious_table['payments'])})
     
-  return Response(json.dumps(missing_money_tables), status=200, mimetype='application/json')
+  return Response(json.dumps(suspicious_cashiers), status=200, mimetype='application/json')
 
 @app.route('/sells_per_waiter', methods=['GET'])
 def sells_per_waiter():
